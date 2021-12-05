@@ -88,15 +88,6 @@
     "filterable": 1
   },
   {
-    "key": "csp_Djx",
-    "name": "瓜皮TV(爬虫)",
-    "type": 3,
-    "api": "csp_Djx",
-    "searchable": 1,
-    "quickSearch": 0,
-    "filterable": 1
-  },
-  {
     "key": "csp_Imaple",
     "name": "枫林网(爬虫)",
     "type": 3,

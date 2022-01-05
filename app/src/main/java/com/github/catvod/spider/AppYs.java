@@ -477,8 +477,10 @@ public class AppYs extends Spider {
         } else if (URL.contains("api.php/app") || URL.contains("xgapp.php/v1")) {
             return URL + "search?text=" + KEY + "&pg=";
         } else if (urlPattern1.matcher(URL).find()) {
-            if (URL.contains("lxue")
-                    || URL.contains("jdys.weetai.cn")
+            if (URL.contains("tv.cttv")
+                    || URL.contains("dcd")
+                    || URL.contains("lxue")
+                    || URL.contains("weetai.cn")
                     || URL.contains("haokanju1")
                     || URL.contains("fit:8")
                     || URL.contains("zjj.life")
@@ -497,7 +499,7 @@ public class AppYs extends Spider {
                     || URL.contains("chxjon")
                     || URL.contains("watchmi")
                     || URL.contains("vipbp")
-                    || URL.contains("wsba")
+                    || URL.contains("bhtv")
                     || URL.contains("xfykl")) {
                 return URL + "?ac=list&" + "wd=" + KEY + "&page=";
             } else {
@@ -529,7 +531,7 @@ public class AppYs extends Spider {
             Pattern.compile("zly\\.+xjqxz\\.+top/player/\\?url="),
             Pattern.compile("5znn\\.+xyz/m3u8\\.+php"),
             Pattern.compile("uid=1735&my="),
-            Pattern.compile("api\\.+iopenyun\\.+com:88/vip/\\?url="),
+            Pattern.compile("api\\.+xkvideo\\.+design/m3u8\\.+php\\?url="),
             Pattern.compile("play\\.+szbodankyy\\.+com/xxoocnmb"),
             Pattern.compile("vip\\.+fj6080\\.+xyz/player/\\?url="),
             Pattern.compile("a\\.+dxzj88\\.+com/jiexi"),
@@ -548,8 +550,10 @@ public class AppYs extends Spider {
     };
 
     private String UA(String URL) {
-        if (URL.contains("api.php/app") || URL.contains("xgapp.php/v1")) {
+        if (URL.contains("api.php/app") || URL.contains("xgapp.php/v1") || URL.contains("freekan")) {
             return "Dart/2.13 (dart:io)";
+        } else if (URL.contains("xays") || URL.contains("xcys") || URL.contains("szys") || URL.contains("dxys") || URL.contains("ytys") || URL.contains("qnys")) {
+            return "Dart/2.15 (dart:io)";
         } else if (URL.contains(".vod")) {
             return "okhttp/4.1.0";
         } else {
@@ -624,11 +628,11 @@ public class AppYs extends Spider {
     // ######筛选内容
     String getFilterTypes(String URL) {
         if (URL.contains("api.php/app") || URL.contains("xgapp.php/v1")) {
-            return "类型+全部=+喜剧+爱情+恐怖+动作+科幻+剧情+战争+警匪+犯罪+动画+奇幻+武侠+冒险+枪战+恐怖+悬疑+惊悚+经典+青春+文艺+微电影+古装+历史+运动+农村+惊悚+伦理+情色+福利+惊悚+儿童+网络电影\n地区+全部=+内地+香港+台湾+美国+英国+法国+日本+韩国+德国+泰国+印度+西班牙+加拿大+其他\n语种+全部=+国语+英语+粤语+闽南语+韩语+日语+法语+德语+其他\n年份+全部=+2021+2020+2019+2018+2017+2016+2015+2014+2013+2012+2011+2010+2009+2008+2007+2006+2005+2004+2003+2002+2001+2000";
+            return "类型+全部=+喜剧+爱情+恐怖+动作+科幻+剧情+战争+警匪+犯罪+动画+奇幻+武侠+冒险+枪战+恐怖+悬疑+惊悚+经典+青春+文艺+微电影+古装+历史+运动+农村+惊悚+伦理+情色+福利+三级+惊悚+儿童+网络电影\n地区+全部=+内地+香港+台湾+美国+英国+法国+日本+韩国+德国+泰国+印度+西班牙+加拿大+其他\n语种+全部=+国语+英语+粤语+闽南语+韩语+日语+法语+德语+其他\n年份+全部=+2021+2020+2019+2018+2017+2016+2015+2014+2013+2012+2011+2010+2009+2008+2007+2006+2005+2004+2003+2002+2001+2000";
         } else if (URL.contains(".vod")) {
-            return "类型+全部=+喜剧+爱情+恐怖+动作+科幻+剧情+战争+警匪+犯罪+动画+奇幻+武侠+冒险+枪战+恐怖+悬疑+惊悚+经典+青春+文艺+微电影+古装+历史+运动+农村+惊悚+伦理+情色+福利+惊悚+儿童+网络电影\n地区+全部=+内地+香港+台湾+美国+英国+法国+日本+韩国+德国+泰国+印度+西班牙+加拿大+其他\n语种+全部=+国语+英语+粤语+闽南语+韩语+日语+法语+德语+其他\n年份+全部=+2021+2020+2019+2018+2017+2016+2015+2014+2013+2012+2011+2010+2009+2008+2007+2006+2005+2004+2003+2002+2001+2000\n排序+全部=+最新=time+最热=hits+评分=score";
+            return "类型+全部=+喜剧+爱情+恐怖+动作+科幻+剧情+战争+警匪+犯罪+动画+奇幻+武侠+冒险+枪战+恐怖+悬疑+惊悚+经典+青春+文艺+微电影+古装+历史+运动+农村+惊悚+伦理+情色+福利+三级+惊悚+儿童+网络电影\n地区+全部=+内地+香港+台湾+美国+英国+法国+日本+韩国+德国+泰国+印度+西班牙+加拿大+其他\n语种+全部=+国语+英语+粤语+闽南语+韩语+日语+法语+德语+其他\n年份+全部=+2021+2020+2019+2018+2017+2016+2015+2014+2013+2012+2011+2010+2009+2008+2007+2006+2005+2004+2003+2002+2001+2000\n排序+全部=+最新=time+最热=hits+评分=score";
         } else {
-            return "分类+电影=movie+连续剧=tvplay+综艺=tvshow+动漫=comic+4K=movie_4k+体育=tiyu\n类型+全部=+喜剧+爱情+恐怖+动作+科幻+剧情+战争+警匪+犯罪+动画+奇幻+武侠+冒险+枪战+恐怖+悬疑+惊悚+经典+青春+文艺+微电影+古装+历史+运动+农村+惊悚+惊悚+伦理+情色+福利+儿童+网络电影\n地区+全部=+大陆+香港+台湾+美国+英国+法国+日本+韩国+德国+泰国+印度+西班牙+加拿大+其他\n年份+全部=+2021+2020+2019+2018+2017+2016+2015+2014+2013+2012+2011+2010+2009+2008+2007+2006+2005+2004+2003+2002+2001+2000";
+            return "分类+全部=+电影=movie+连续剧=tvplay+综艺=tvshow+动漫=comic+4K=movie_4k+体育=tiyu\n类型+全部=+喜剧+爱情+恐怖+动作+科幻+剧情+战争+警匪+犯罪+动画+奇幻+武侠+冒险+枪战+恐怖+悬疑+惊悚+经典+青春+文艺+微电影+古装+历史+运动+农村+惊悚+惊悚+伦理+情色+福利+三级+儿童+网络电影\n地区+全部=+大陆+香港+台湾+美国+英国+法国+日本+韩国+德国+泰国+印度+西班牙+加拿大+其他\n年份+全部=+2021+2020+2019+2018+2017+2016+2015+2014+2013+2012+2011+2010+2009+2008+2007+2006+2005+2004+2003+2002+2001+2000";
         }
     }
 
@@ -865,10 +869,15 @@ public class AppYs extends Spider {
             if (playUrl.indexOf(".m3u8") > 15 || playUrl.indexOf(".mp4") > 15 || playUrl.contains("/obj/tos")) {
                 if (playUrl.contains("url=")) {
                     return "https://www.baidu.com/s?wd=" + playUrl.split("url=")[1];
-                } else if (parseUrl.contains("vip.byteamone.cn") && playUrl.contains("xfy")) {
-                    return "https://vip.xfyun.cc/home/api?type=ys&uid=207276&key=cgmqruvwCGPQRTUVW5&url=" + playUrl.split("url=")[1];
                 } else {
                     return "https://www.baidu.com/s?wd=" + playUrl;
+                }
+            } else if (playUrl.contains("xfy")) {
+                if (playUrl.contains("url=")) {
+                    String spUrl = playUrl.split("url=")[1];
+                    return "https://www.baidu.com/s?wd=https://json.hfyrw.com/mao.go?url=" + spUrl;
+                } else {
+                    return "https://www.baidu.com/s?wd=https://json.hfyrw.com/mao.go?url=" + playUrl;
                 }
             } else {
                 return "https://www.baidu.com/s?wd=" + parseUrl + playUrl;
@@ -885,8 +894,8 @@ public class AppYs extends Spider {
                 return "https://www.baidu.com/s?wd=https://jx.parwix.com:4433/player/?url=" + spUrl;
             } else if (URL.contains("fit:8") || URL.contains("diliktv.xyz") || URL.contains("ppzhu.vip") || URL.contains("api.8d8q.com") || URL.contains("haokanju1.cc") || URL.contains("cztv")) {
                 return "https://www.baidu.com/s?wd=" + playUrl + "&app=10000&account=272775028&password=qq272775028";
-            } else if (URL.contains(".life") || URL.contains("lktv") || URL.contains("0818tv") || URL.contains("ruoxinew")) {
-                return "https://www.baidu.com/s?wd=https://vip.parwix.com:4433/player/?url=" + playUrl.split("url=")[1];
+            } else if (URL.contains("lxyyy") || URL.contains("j.zjj.life") || URL.contains("lktv") || URL.contains("0818tv") || URL.contains("ruoxinew")) {
+                return "https://www.baidu.com/s?wd=https://play.tkys.tv/?url=" + playUrl.split("url=")[1];
             } else {
                 return "https://www.baidu.com/s?wd=" + playUrl;
             }
@@ -934,16 +943,21 @@ public class AppYs extends Spider {
                 result.put("parse", 0);
                 result.put("playUrl", "");
                 result.put("url", playurl);
-                result.put("header", "{\"User-Agent\":\" Mozilla/5.0\",\"Referer\":\" https://qian.wkfile.com/\"}");
+                result.put("header", "{\"User-Agent\":\" Lavf/58.12.100\",\"Referer\":\" wkfile.com\"}");
             } else if (!playurl.contains("=") && playurl.indexOf(".m3u8") > 15 || playurl.indexOf(".mp4") > 15 || playurl.contains("/obj/tos")) {
                 if (playurl.contains("hsl.ysgc.xyz")) {
-                    SpiderReqResult resp = SpiderReq.get(new SpiderUrl("https://play.dushe520.com/m3u8.php?url=" + playurl, null));
+                    SpiderReqResult resp = SpiderReq.get(new SpiderUrl("https://jx.ysgc.xyz/?url=" + playurl, null));
                     JSONObject obj = new JSONObject(resp.content);
                     String ppurl = obj.getString("url");
                     result.put("parse", 0);
                     result.put("playUrl", "");
                     result.put("url", ppurl);
                     result.put("header", "{\"Referer\":\" https://ysgc.cc\"}");
+                } else if (playurl.contains("1.ruifenglb.com")) {
+                    result.put("parse", 0);
+                    result.put("playUrl", "");
+                    result.put("url", playurl);
+                    result.put("header", "{\"Referer\":\" https://1.ruifenglb.com\"}");
                 } else {
                     Matcher matcher = Pattern.compile(".*(http.*)").matcher(playurl);
                     if (matcher.find()) {
@@ -958,7 +972,7 @@ public class AppYs extends Spider {
                 }
             } else if (playurl.contains("=")) {
                 HashMap<String, String> headers = new HashMap();
-                headers.put("User-Agent", "Mozilla/5.0");
+                headers.put("User-Agent", "Mozilla/5.0 Android");
                 SpiderReqResult resp = SpiderReq.get(SpiderOKClient.noRedirectClient(), new SpiderUrl(playurl, headers));
                 String redLoc = SpiderOKClient.getRedirectLocation(resp.headers);
                 if (redLoc != null) {

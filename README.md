@@ -72,8 +72,7 @@
 
 ---
 
-
-**M浏览器中APP影视规则支持 **（2022.01.17 by 小黄瓜）支持筛选。
+**M浏览器中APP影视规则支持**（2022.01.17 by 小黄瓜）支持筛选。
 
 因<a href="https://inmemory.coding.net/p/InMemory/d/MBrowser/git/raw/master/AppFile/APP%E5%BD%B1%E8%A7%86%E5%88%97%E8%A1%A8" target="_blank">App影视接口收集地址</a>停止维护，代码里不再读取相关json地址。
 

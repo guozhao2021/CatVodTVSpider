@@ -30,20 +30,18 @@ import java.util.regex.Pattern;
  */
 public class AppYs extends Spider {
 
-    private String sourceName = "";
+    private String extString = "";
 
     @Override
     public void init(Context context, String extend) {
         super.init(context, extend);
-        this.sourceName = extend;
+        this.extString = extend;
     }
 
     @Override
     public String homeContent(boolean filter) {
         try {
-            fetchRule();
-            JSONObject site = getJson();
-            String url = getCateUrl(site.getString("url"));
+            String url = getCateUrl(extString);
             JSONArray jsonArray = null;
             if (!url.isEmpty()) {
                 SpiderDebug.log(url);
@@ -131,9 +129,7 @@ public class AppYs extends Spider {
     @Override
     public String homeVideoContent() {
         try {
-            fetchRule();
-            JSONObject site = getJson();
-            String apiUrl = site.getString("url");
+            String apiUrl = extString;
             String url = getRecommendUrl(apiUrl);
             boolean isTV = false;
             if (url.isEmpty()) {
@@ -190,9 +186,7 @@ public class AppYs extends Spider {
     @Override
     public String categoryContent(String tid, String pg, boolean filter, HashMap<String, String> extend) {
         try {
-            fetchRule();
-            JSONObject site = getJson();
-            String apiUrl = site.getString("url");
+            String apiUrl = extString;
             String url = getCateFilterUrlPrefix(apiUrl) + tid + getCateFilterUrlSuffix(apiUrl);
             url = url.replace("#PN#", pg);
             url = url.replace("类型", (extend != null && extend.containsKey("类型")) ? extend.get("类型") : "");
@@ -265,9 +259,7 @@ public class AppYs extends Spider {
     @Override
     public String detailContent(List<String> ids) {
         try {
-            fetchRule();
-            JSONObject site = getJson();
-            String apiUrl = site.getString("url");
+            String apiUrl = extString;
             String url = getPlayUrlPrefix(apiUrl) + ids.get(0);
             SpiderDebug.log(url);
             String json = SpiderReq.get(new SpiderUrl(url, getHeaders(url))).content;
@@ -288,9 +280,7 @@ public class AppYs extends Spider {
     @Override
     public String searchContent(String key, boolean quick) {
         try {
-            fetchRule();
-            JSONObject site = getJson();
-            String apiUrl = site.getString("url");
+            String apiUrl = extString;
             String url = getSearchUrl(apiUrl, URLEncoder.encode(key));
             String json = SpiderReq.get(new SpiderUrl(url, getHeaders(url))).content;
             JSONObject obj = new JSONObject(json);
@@ -335,9 +325,7 @@ public class AppYs extends Spider {
     @Override
     public String playerContent(String flag, String id, List<String> vipFlags) {
         try {
-            fetchRule();
-            JSONObject site = getJson();
-            String apiUrl = site.getString("url");
+            String apiUrl = extString;
             String parseUrl = getParseUrl(apiUrl, flag);
             String playerUrl = getPlayerUrl(apiUrl, parseUrl, id);
             JSONObject result = new JSONObject();
@@ -383,7 +371,6 @@ public class AppYs extends Spider {
         return "";
     }
 
-    private static final HashMap<String, JSONObject> sites = new HashMap<>();
     private static HashMap<String, String> fakeVips = null;
     private static final Object lock = new Object();
 
@@ -408,50 +395,6 @@ public class AppYs extends Spider {
             }
             return flag;
         }
-    }
-
-    public static String[] getExtKeys() {
-        fetchRule();
-        synchronized (lock) {
-            String[] array = new String[sites.size()];
-            sites.keySet().toArray(array);
-            return array;
-        }
-    }
-
-    public static void fetchRule() {
-        synchronized (lock) {
-            if (sites.size() == 0) {
-                try {
-                    SpiderUrl su = new SpiderUrl("https://litecucumber.coding.net/p/cat/d/config/git/raw/master/appys.json", null);
-                    String json = SpiderReq.get(su).content.replaceAll("\\s", "");
-                    JSONArray sources = new JSONObject(json).optJSONArray("data");
-                    for (int i = 0; i < sources.length(); i++) {
-                        JSONArray list = sources.getJSONObject(i).getJSONArray("list");
-                        String title = sources.getJSONObject(i).getString("title");
-                        Matcher matcher = Pattern.compile(".+\\((.+)\\)").matcher(title);
-                        if (matcher.find()) {
-                            title = matcher.group(1);
-                        }
-                        for (int j = 0; j < list.length(); j++) {
-                            JSONObject obj = list.getJSONObject(j);
-                            String scName = obj.optString("title");
-                            sites.put(title + "_" + scName, obj);
-                            SpiderDebug.log("{\"key\":\"csp_appys_" + title + "_" + scName + "\", \"name\":\"" + scName + "(M)\", \"type\":3, \"api\":\"csp_AppYs\",\"searchable\":1,\"quickSearch\":0,\"filterable\":1,\"ext\":\"" + title + "_" + scName + "\"},");
-                        }
-                    }
-                } catch (Exception e) {
-                    SpiderDebug.log(e);
-                }
-            }
-        }
-    }
-
-    private JSONObject getJson() {
-        if (sites.containsKey(sourceName)) {
-            return sites.get(sourceName);
-        }
-        return null;
     }
 
     private HashMap<String, String> getHeaders(String URL) {
@@ -588,7 +531,11 @@ public class AppYs extends Spider {
         if (URL.contains("api.php/app") || URL.contains("xgapp.php/v1")) {
             return URL + "nav?token=";
         } else if (URL.contains(".vod")) {
-            return URL + "/types";
+            if (URL.contains("iopenyun.com")) {
+                return URL + "/list?type";
+            } else {
+                return URL + "/types";
+            }
         } else {
             return "";
         }
@@ -796,7 +743,7 @@ public class AppYs extends Spider {
                         }
                         parseUrlMap.put(flag, purl);
                     } else {
-                        parseUrlMap.put(flag, "http://egwang186.gitee.io/?url=");
+                        parseUrlMap.put(flag, "http://1.117.152.239:39000/?url=");
                     }
                 } catch (Exception e) {
                     SpiderDebug.log(e);
@@ -909,7 +856,7 @@ public class AppYs extends Spider {
         if (uu.contains("baidu.com")) {
             String playurl = uu.split("wd=")[1];
             if (playurl.contains("duoduozy.com")) {
-                String uuu = "https://player.duoduozy.com/ddplay/?url=" + playurl;
+                String uuu = "https://bo.movie06.com/ddplay/play.php?url=" + playurl;
                 HashMap<String, String> headers = new HashMap();
                 headers.put("referer", "https://www.duoduozy.com/");
                 SpiderReqResult srr = SpiderReq.get(new SpiderUrl(uuu, headers));
@@ -1033,7 +980,7 @@ public class AppYs extends Spider {
                             if (playurl.split("url=")[1].contains("http")) {
                                 result.put("parse", 1);
                                 result.put("playUrl", "");
-                                result.put("url", "http://egwang186.gitee.io/?url=" + playurl.split("url=")[1]);
+                                result.put("url", "http://1.117.152.239:39000/?url=" + playurl.split("url=")[1]);
                             } else if (playurl.split("url=")[1].contains("renrenmi")) {
                                 result.put("parse", 1);
                                 result.put("playUrl", "");
@@ -1041,6 +988,7 @@ public class AppYs extends Spider {
                                 result.put("header", "{\"Referer\":\"http://www.1080kan.cc/\"}");
                             } else {
                                 String id = playurl.split("url=")[1];
+								/*
                                 String uuu = "https://vip.gaotian.love/api/?key=sRy0QAq8hqXRlrEtrq&url=" + id;
                                 resp = SpiderReq.get(new SpiderUrl(uuu, null));
                                 JSONObject obj = new JSONObject(resp.content);
@@ -1050,6 +998,10 @@ public class AppYs extends Spider {
                                 result.put("parse", 0);
                                 result.put("playUrl", "");
                                 result.put("url", realurl);
+								 */
+                                result.put("parse", 1);
+                                result.put("playUrl", "");
+                                result.put("url", "https://jx.banyung.xyz:7799/player/?url=" + playurl.split("url=")[1]);
                             }
                         }
                     } else {
@@ -1079,7 +1031,7 @@ public class AppYs extends Spider {
                         } else if (playurl.split("url=")[1].contains("http")) {
                             result.put("parse", 1);
                             result.put("playUrl", "");
-                            result.put("url", "http://egwang186.gitee.io/?url=" + playurl.split("url=")[1]);
+                            result.put("url", "http://1.117.152.239:39000/?url=" + playurl.split("url=")[1]);
                         } else if (playurl.split("url=")[1].contains("renrenmi")) {
                             result.put("parse", 1);
                             result.put("playUrl", "");
@@ -1087,6 +1039,7 @@ public class AppYs extends Spider {
                             result.put("header", "{\"Referer\":\"http://www.1080kan.cc/\"}");
                         } else {
                             String id = playurl.split("url=")[1];
+							/*
                             String uuu = "https://vip.gaotian.love/api/?key=sRy0QAq8hqXRlrEtrq&url=" + id;
                             resp = SpiderReq.get(new SpiderUrl(uuu, null));
                             JSONObject obj = new JSONObject(resp.content);
@@ -1096,6 +1049,10 @@ public class AppYs extends Spider {
                             result.put("parse", 0);
                             result.put("playUrl", "");
                             result.put("url", realurl);
+							*/
+                            result.put("parse", 1);
+                            result.put("playUrl", "");
+                            result.put("url", "https://jx.banyung.xyz:7799/player/?url=" + playurl.split("url=")[1]);
                         }
                     }
                 }

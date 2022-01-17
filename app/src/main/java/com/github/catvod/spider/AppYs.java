@@ -855,7 +855,7 @@ public class AppYs extends Spider {
     private void getFinalVideo(String uu, JSONObject result) throws JSONException {
         if (uu.contains("baidu.com")) {
             String playurl = uu.split("wd=")[1];
-            if (playurl.contains("duoduozy.com")) {
+            if (playurl.contains("duoduozy.com") || playurl.contains("m3u8.cache.suoyo.cc")) {
                 String uuu = "https://bo.movie06.com/ddplay/play.php?url=" + playurl;
                 HashMap<String, String> headers = new HashMap();
                 headers.put("referer", "https://www.duoduozy.com/");

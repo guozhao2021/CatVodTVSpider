@@ -92,12 +92,22 @@
 
 ---
 
+**部分内置代理接口使用（需v2.0.9及以上版本）**
+
+入口 [Proxy](/app/src/main/java/com/github/catvod/spider/Proxy.java)
+
+图片代理，示例参考[Nekk](/app/src/main/java/com/github/catvod/spider/Nekk.java)
+
+直播代理，示例参考[Nekk](/app/src/main/java/com/github/catvod/live/TxtSubscribe.java)
+
+---
+
 ## 基础类
 ----
 
 > com.github.catvod.crawler.Spider 爬虫基类
 
-> com.github.catvod.crawler.SpiderReq 用于发起网络请求 获取网络数据
+> com.github.catvod.crawler.SpiderReq 用于发起网络请求 获取网络数据，请使用[OkHttpUtil](/app/src/main/java/com/github/catvod/utils/okhttp/OkHttpUtil.java)类，SpiderReq后续将删除
 
 > com.github.catvod.crawler.SpiderReqResult 网络请求结果
 

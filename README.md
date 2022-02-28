@@ -96,9 +96,9 @@
 
 入口 [Proxy](/app/src/main/java/com/github/catvod/spider/Proxy.java)
 
-图片代理，示例参考[Nekk](/app/src/main/java/com/github/catvod/spider/Nekk.java)
+图片代理，示例参考[Nekk](/app/src/main/java/com/github/catvod/spider/Nekk.java#L449)
 
-直播代理，示例参考[Nekk](/app/src/main/java/com/github/catvod/live/TxtSubscribe.java)
+直播配置重定向代理，示例参考[TxtSubscribe](/app/src/main/java/com/github/catvod/live/TxtSubscribe.java)
 
 ---
 

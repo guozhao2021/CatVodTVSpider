@@ -23,7 +23,7 @@ public class JsonSequence {
             if (jx.size() > 0) {
                 Set<String> jxNames = jx.keySet();
                 for (String jxName : jxNames) {
-                    String parseUrl = jx.get(jxName) + url;
+                    String parseUrl = jx.get(jxName);
                     try {
                         HashMap<String, String> reqHeaders = JsonBasic.getReqHeader(parseUrl);
                         String realUrl = reqHeaders.get("url");

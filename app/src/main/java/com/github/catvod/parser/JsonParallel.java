@@ -36,7 +36,7 @@ public class JsonParallel {
                 List<Future<JSONObject>> futures = new ArrayList<>();
                 Set<String> jxNames = jx.keySet();
                 for (String jxName : jxNames) {
-                    String parseUrl = jx.get(jxName) + url;
+                    String parseUrl = jx.get(jxName);
                     futures.add(completionService.submit(new Callable<JSONObject>() {
                         @Override
                         public JSONObject call() throws Exception {

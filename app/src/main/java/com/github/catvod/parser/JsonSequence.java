@@ -24,11 +24,11 @@ public class JsonSequence {
                 Set<String> jxNames = jx.keySet();
                 for (String jxName : jxNames) {
                     String parseUrl = jx.get(jxName) + url;
-                    SpiderDebug.log(parseUrl);
                     try {
                         HashMap<String, String> reqHeaders = JsonBasic.getReqHeader(parseUrl);
                         String realUrl = reqHeaders.get("url");
                         reqHeaders.remove("url");
+                        SpiderDebug.log(realUrl + url);
                         String json = OkHttpUtil.string(realUrl + url, reqHeaders);
                         JSONObject taskResult = Misc.jsonParse(url, json);
                         if (taskResult == null)

@@ -349,10 +349,6 @@ public class AppYsV2 extends Spider {
             ArrayList<String> parseUrls = parseUrlMap.get(flag);
             if (parseUrls == null)
                 parseUrls = new ArrayList<>();
-            String parseUrl = getCustomJxUrl(flag);
-            if (!parseUrl.isEmpty()) {
-                parseUrls.add(0, parseUrl);
-            }
             if (!parseUrls.isEmpty()) {
                 JSONObject result = getFinalVideo(flag, parseUrls, id);
                 if (result != null)
@@ -821,69 +817,19 @@ public class AppYsV2 extends Spider {
 
 
     private String getApiUrl() {
-        if (extInfos == null || extInfos.length < 2)
+        if (extInfos == null || extInfos.length < 1)
             return "";
-        JSONObject siteRule = fetchRule(extInfos[1].trim());
-        if (siteRule == null)
-            return "";
-        try {
-            return siteRule.getJSONObject("sites").getJSONObject(extInfos[0].trim()).getString("url");
-        } catch (JSONException e) {
-        }
-        return "";
-    }
-
-    private String getCustomJxUrl(String flag) {
-        if (extInfos == null || extInfos.length < 2)
-            return "";
-        JSONObject siteRule = fetchRule(extInfos[1].trim());
-        if (siteRule == null)
-            return "";
-        try {
-            JSONArray jxArray = siteRule.getJSONObject("sites").getJSONObject(extInfos[0].trim()).optJSONArray("jx");
-            if (jxArray != null)
-                for (int i = 0; i < jxArray.length(); i++) {
-                    JSONArray jxUrls = jxArray.getJSONArray(i);
-                    for (int j = 0; j < jxUrls.length() - 1; j++) {
-                        if (jxUrls.getString(j).equals(flag))
-                            return jxUrls.getString(jxUrls.length() - 1);
-                    }
-                }
-            jxArray = siteRule.optJSONArray("jx");
-            if (jxArray != null)
-                for (int i = 0; i < jxArray.length(); i++) {
-                    JSONArray jxUrls = jxArray.getJSONArray(i);
-                    for (int j = 0; j < jxUrls.length() - 1; j++) {
-                        if (jxUrls.getString(j).equals(flag))
-                            return jxUrls.getString(jxUrls.length() - 1);
-                    }
-                }
-        } catch (JSONException e) {
-        }
-        return "";
+        return extInfos[0].trim();
     }
 
     private String[] extInfos = null;
 
-    private static HashMap<String, JSONObject> rules = new HashMap<>();
-
-    private synchronized JSONObject fetchRule(String ruleUrl) {
-        if (rules.containsKey(ruleUrl))
-            return rules.get(ruleUrl);
-        JSONObject object = null;
-        try {
-            String content = OkHttpUtil.string(ruleUrl, null);
-            object = new JSONObject(content);
-            rules.put(ruleUrl, object);
-        } catch (Throwable th) {
-
-        }
-        return object;
-    }
-
     protected String desc(String src, byte type) {
-        if (extInfos.length > 2) {
-            String descFlag = extInfos[2];
+        if (extInfos.length > 1) {
+            String descFlag = extInfos[1];
+            if (descFlag.equals("nftv")) {
+
+            }
         }
         return src;
     }

@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderDebug;
 import com.github.catvod.utils.Misc;
+import com.github.catvod.utils.okhttp.OKCallBack;
 import com.github.catvod.utils.okhttp.OkHttpUtil;
 
 import org.json.JSONArray;
@@ -15,6 +16,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import okhttp3.Call;
 
 public class XBiubiu extends Spider {
 
@@ -53,7 +58,7 @@ public class XBiubiu extends Spider {
 
     protected HashMap<String, String> getHeaders(String url) {
         HashMap<String, String> headers = new HashMap<>();
-        String ua = getRuleVal("User", Misc.UaWinChrome).trim();
+        String ua = getRuleVal("UserW", Misc.UaWinChrome).trim();
         if (ua.isEmpty())
             ua = Misc.UaWinChrome;
         headers.put("User-Agent", ua);
@@ -101,28 +106,27 @@ public class XBiubiu extends Spider {
             if (shifouercijiequ) {
                 String jiequqian = getRuleVal("jiequqian");
                 String jiequhou = getRuleVal("jiequhou");
-                parseContent = subContent(html, jiequqian, jiequhou, 0);
+                parseContent = subContent(html, jiequqian, jiequhou).get(0);
             }
             String jiequshuzuqian = getRuleVal("jiequshuzuqian");
             String jiequshuzuhou = getRuleVal("jiequshuzuhou");
-            resetSubIdx();
             JSONArray videos = new JSONArray();
-            String jiequContent = subContent(parseContent, jiequshuzuqian, jiequshuzuhou, 0);
-            while (subContentIdx[1] != -1) {
+            ArrayList<String> jiequContents = subContent(parseContent, jiequshuzuqian, jiequshuzuhou);
+            for (int i = 0; i < jiequContents.size(); i++) {
                 try {
-                    int jiequStartIdx = subContentIdx[1];
-                    String title = subContent(jiequContent, getRuleVal("biaotiqian"), getRuleVal("biaotihou"), 0);
-                    String pic = subContent(jiequContent, getRuleVal("tupianqian"), getRuleVal("tupianhou"), 0);
+                    String jiequContent = jiequContents.get(i);
+                    String title = subContent(jiequContent, getRuleVal("biaotiqian"), getRuleVal("biaotihou")).get(0);
+                    String pic = subContent(jiequContent, getRuleVal("tupianqian"), getRuleVal("tupianhou")).get(0);
                     pic = Misc.fixUrl(webUrl, pic);
-                    String link = subContent(jiequContent, getRuleVal("lianjieqian"), getRuleVal("lianjiehou"), 0);
+                    String link = subContent(jiequContent, getRuleVal("lianjieqian"), getRuleVal("lianjiehou")).get(0);
                     JSONObject v = new JSONObject();
                     v.put("vod_id", title + "$$$" + pic + "$$$" + link);
                     v.put("vod_name", title);
                     v.put("vod_pic", pic);
                     v.put("vod_remarks", "");
                     videos.put(v);
-                    jiequContent = subContent(parseContent, jiequshuzuqian, jiequshuzuhou, jiequStartIdx);
                 } catch (Throwable th) {
+                    th.printStackTrace();
                     break;
                 }
             }
@@ -157,33 +161,29 @@ public class XBiubiu extends Spider {
             if (bfshifouercijiequ) {
                 String jiequqian = getRuleVal("bfjiequqian");
                 String jiequhou = getRuleVal("bfjiequhou");
-                parseContent = subContent(html, jiequqian, jiequhou, 0);
+                parseContent = subContent(html, jiequqian, jiequhou).get(0);
             }
 
             ArrayList<String> playList = new ArrayList<>();
 
             String jiequshuzuqian = getRuleVal("bfjiequshuzuqian");
             String jiequshuzuhou = getRuleVal("bfjiequshuzuhou");
-            resetSubIdx();
             boolean bfyshifouercijiequ = getRuleVal("bfyshifouercijiequ").equals("1");
-            String jiequContent = subContent(parseContent, jiequshuzuqian, jiequshuzuhou, 0);
-            while (subContentIdx[1] != -1) {
+            ArrayList<String> jiequContents = subContent(parseContent, jiequshuzuqian, jiequshuzuhou);
+            for (int i = 0; i < jiequContents.size(); i++) {
                 try {
-                    int jiequStartIdx = subContentIdx[1];
-                    String parseJqContent = bfyshifouercijiequ ? subContent(jiequContent, getRuleVal("bfyjiequqian"), getRuleVal("bfyjiequhou"), 0) : jiequContent;
-                    resetSubIdx();
-                    String lastParseContent = subContent(parseJqContent, getRuleVal("bfyjiequshuzuqian"), getRuleVal("bfyjiequshuzuhou"), 0);
+                    String jiequContent = jiequContents.get(i);
+                    String parseJqContent = bfyshifouercijiequ ? subContent(jiequContent, getRuleVal("bfyjiequqian"), getRuleVal("bfyjiequhou")).get(0) : jiequContent;
+                    ArrayList<String> lastParseContents = subContent(parseJqContent, getRuleVal("bfyjiequshuzuqian"), getRuleVal("bfyjiequshuzuhou"));
                     List<String> vodItems = new ArrayList<>();
-                    while (subContentIdx[1] != -1) {
-                        int jiequStartIdxSub = subContentIdx[1];
-                        String title = subContent(lastParseContent, getRuleVal("bfbiaotiqian"), getRuleVal("bfbiaotihou"), 0);
-                        String link = subContent(lastParseContent, getRuleVal("bflianjieqian"), getRuleVal("bflianjiehou"), 0);
+                    for (int j = 0; j < lastParseContents.size(); j++) {
+                        String title = subContent(lastParseContents.get(j), getRuleVal("bfbiaotiqian"), getRuleVal("bfbiaotihou")).get(0);
+                        String link = subContent(lastParseContents.get(j), getRuleVal("bflianjieqian"), getRuleVal("bflianjiehou")).get(0);
                         vodItems.add(title + "$" + link);
-                        lastParseContent = subContent(parseJqContent, getRuleVal("bfyjiequshuzuqian"), getRuleVal("bfyjiequshuzuhou"), jiequStartIdxSub);
                     }
                     playList.add(TextUtils.join("#", vodItems));
-                    jiequContent = subContent(parseContent, jiequshuzuqian, jiequshuzuhou, jiequStartIdx);
                 } catch (Throwable th) {
+                    th.printStackTrace();
                     break;
                 }
             }
@@ -246,8 +246,9 @@ public class XBiubiu extends Spider {
         try {
             fetchRule();
             boolean ssmoshiJson = getRuleVal("ssmoshi").equals("0");
-            String webUrl = getRuleVal("url") + getRuleVal("sousuoqian") + key + getRuleVal("sousuohou");
-            String webContent = fetch(webUrl);
+            String webUrlTmp = getRuleVal("url") + getRuleVal("sousuoqian") + key + getRuleVal("sousuohou");
+            String webUrl = webUrlTmp.split(";")[0];
+            String webContent = webUrlTmp.contains(";post") ? fetchPost(webUrl) : fetch(webUrl);
             JSONObject result = new JSONObject();
             JSONArray videos = new JSONArray();
             if (ssmoshiJson) {
@@ -272,27 +273,26 @@ public class XBiubiu extends Spider {
                 if (shifouercijiequ) {
                     String jiequqian = getRuleVal("ssjiequqian");
                     String jiequhou = getRuleVal("ssjiequhou");
-                    parseContent = subContent(webContent, jiequqian, jiequhou, 0);
+                    parseContent = subContent(webContent, jiequqian, jiequhou).get(0);
                 }
                 String jiequshuzuqian = getRuleVal("ssjiequshuzuqian");
                 String jiequshuzuhou = getRuleVal("ssjiequshuzuhou");
-                resetSubIdx();
-                String jiequContent = subContent(parseContent, jiequshuzuqian, jiequshuzuhou, 0);
-                while (subContentIdx[1] != -1) {
+                ArrayList<String> jiequContents = subContent(parseContent, jiequshuzuqian, jiequshuzuhou);
+                for (int i = 0; i < jiequContents.size(); i++) {
                     try {
-                        int jiequStartIdx = subContentIdx[1];
-                        String title = subContent(jiequContent, getRuleVal("ssbiaotiqian"), getRuleVal("ssbiaotihou"), 0);
-                        String pic = subContent(jiequContent, getRuleVal("sstupianqian"), getRuleVal("sstupianhou"), 0);
+                        String jiequContent = jiequContents.get(i);
+                        String title = subContent(jiequContent, getRuleVal("ssbiaotiqian"), getRuleVal("ssbiaotihou")).get(0);
+                        String pic = subContent(jiequContent, getRuleVal("sstupianqian"), getRuleVal("sstupianhou")).get(0);
                         pic = Misc.fixUrl(webUrl, pic);
-                        String link = subContent(jiequContent, getRuleVal("sslianjieqian"), getRuleVal("sslianjiehou"), 0);
+                        String link = subContent(jiequContent, getRuleVal("sslianjieqian"), getRuleVal("sslianjiehou")).get(0);
                         JSONObject v = new JSONObject();
                         v.put("vod_id", title + "$$$" + pic + "$$$" + link);
                         v.put("vod_name", title);
                         v.put("vod_pic", pic);
                         v.put("vod_remarks", "");
                         videos.put(v);
-                        jiequContent = subContent(parseContent, jiequshuzuqian, jiequshuzuhou, jiequStartIdx);
                     } catch (Throwable th) {
+                        th.printStackTrace();
                         break;
                     }
                 }
@@ -327,14 +327,23 @@ public class XBiubiu extends Spider {
 
     protected String fetch(String webUrl) {
         SpiderDebug.log(webUrl);
-        return OkHttpUtil.string(webUrl, getHeaders(webUrl));
+        return OkHttpUtil.string(webUrl, getHeaders(webUrl)).replaceAll("\r|\n", "");
     }
 
-    private int[] subContentIdx = new int[2];
+    protected String fetchPost(String webUrl) {
+        SpiderDebug.log(webUrl);
+        OKCallBack.OKCallBackString callBack = new OKCallBack.OKCallBackString() {
+            @Override
+            protected void onFailure(Call call, Exception e) {
 
-    private void resetSubIdx() {
-        subContentIdx[0] = -1;
-        subContentIdx[1] = -1;
+            }
+
+            @Override
+            protected void onResponse(String response) {
+            }
+        };
+        OkHttpUtil.post(OkHttpUtil.defaultClient(), webUrl, callBack);
+        return callBack.getResult().replaceAll("\r|\n", "");
     }
 
     private String getRuleVal(String key, String defaultVal) {
@@ -348,21 +357,17 @@ public class XBiubiu extends Spider {
         return getRuleVal(key, "");
     }
 
-    private String subContent(String content, String startFlag, String endFlag, int startIdx) {
+    private ArrayList<String> subContent(String content, String startFlag, String endFlag) {
+        ArrayList<String> result = new ArrayList<>();
         try {
-            int start = content.indexOf(startFlag, startIdx);
-            if (start == -1) {
-                resetSubIdx();
-                return "";
+            Pattern pattern = Pattern.compile(startFlag + "(.*?)" + endFlag);
+            Matcher matcher = pattern.matcher(content);
+            while (matcher.find()) {
+                result.add(matcher.group(1));
             }
-            start = start + startFlag.length();
-            int end = content.indexOf(endFlag, start);
-            subContentIdx[0] = start;
-            subContentIdx[1] = end;
-            return content.substring(start, end);
         } catch (Throwable th) {
-            resetSubIdx();
-            return "";
+            th.printStackTrace();
         }
+        return result;
     }
 }

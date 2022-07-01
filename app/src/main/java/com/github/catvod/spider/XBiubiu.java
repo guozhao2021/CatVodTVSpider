@@ -119,6 +119,7 @@ public class XBiubiu extends Spider {
                     String pic = subContent(jiequContent, getRuleVal("tupianqian"), getRuleVal("tupianhou")).get(0);
                     pic = Misc.fixUrl(webUrl, pic);
                     String link = subContent(jiequContent, getRuleVal("lianjieqian"), getRuleVal("lianjiehou")).get(0);
+                    String remarks = subContent(jiequContent, getRuleVal("gengxinqian"), getRuleVal("gengxinhou")).get(0);
                     JSONObject v = new JSONObject();
                     v.put("vod_id", title + "$$$" + pic + "$$$" + link);
                     v.put("vod_name", title);
